@@ -54,10 +54,8 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    console.log("App: Checking authentication state...");
     authService.getCurrentUser()
       .then((userData) => {
-        console.log("App: User data received:", userData ? "User logged in" : "No user");
         if (userData) {
           dispatch(login({ userData }));
         } else {

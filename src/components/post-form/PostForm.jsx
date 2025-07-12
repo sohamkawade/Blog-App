@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../app/conf";
@@ -17,35 +17,55 @@ export default function PostForm({ post }) {
 
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const submit = async (data) => {
-        if (post) {
-            const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
+        setIsSubmitting(true);
+        try {            
+            if (post) {
+                const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
 
-            if (file) {
-                appwriteService.deleteFile(post.featuredImage);
-            }
+                if (file) {
+                    appwriteService.deleteFile(post.featuredImage);
+                }
 
-            const dbPost = await appwriteService.updatePost(post.$id, {
-                ...data,
-                featuredImage: file ? file.$id : undefined,
-            });
-
-            if (dbPost) {
-                navigate(`/post/${dbPost.$id}`);
-            }
-        } else {
-            const file = await appwriteService.uploadFile(data.image[0]);
-
-            if (file) {
-                const fileId = file.$id;
-                data.featuredImage = fileId;
-                const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
+                const dbPost = await appwriteService.updatePost(post.$id, {
+                    ...data,
+                    featuredImage: file ? file.$id : undefined,
+                });
 
                 if (dbPost) {
                     navigate(`/post/${dbPost.$id}`);
                 }
+            } else {
+                
+                if (!data.image[0]) {
+                    alert("Please select an image file. This is required for new posts.");
+                    return;
+                }
+
+                const file = await appwriteService.uploadFile(data.image[0]);
+
+                if (file) {
+                    const fileId = file.$id;
+                    data.featuredImage = fileId;
+                    
+                    const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
+
+                    if (dbPost) {
+                        alert("Post created successfully!");
+                        navigate(`/post/${dbPost.$id}`);
+                    }
+                } else {
+                    console.error("PostForm: File upload failed");
+                    alert("Failed to upload image. Please check your internet connection and try again.");
+                }
             }
+        } catch (error) {
+            console.error("PostForm: Error during submission:", error);
+            alert(`Error: ${error.message || "Failed to create/update post"}`);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -71,13 +91,13 @@ export default function PostForm({ post }) {
     }, [watch, slugTransform, setValue]);
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-col md:flex-row flex-wrap w-full gap-4 md:gap-0">
-            <div className="w-full  md:w-2/3 px-0 md:px-2 text-white">
+        <form onSubmit={handleSubmit(submit)} className="flex flex-col lg:flex-row flex-wrap w-full gap-6 lg:gap-8" noValidate>
+            <div className="w-full lg:w-2/3 px-2 sm:px-4 lg:px-6 text-white">
                 <Input
                     label="Title :"
-                    placeholder="Title"
+                    placeholder="Enter post title"
                     className="mb-4"
-                    {...register("title", { required: true })}
+                    {...register("title", { required: "Title is required" })}
                 />
                 <Input
                     label="Slug :"
@@ -90,23 +110,31 @@ export default function PostForm({ post }) {
                 />
                 <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
             </div>
-            <div className="w-full md:w-1/3 px-0 md:px-2 mt-4 md:mt-0">
-                <Input
+            <div className="w-full lg:w-1/3 px-2 sm:px-4 lg:px-6 mt-6 lg:mt-0">
+                <div className="bg-[#1e1e2f]/80 backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-[#2C2C30]">
+                                    <Input
                     label="Featured Image :"
                     type="file"
                     className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
+                    capture="environment"
                     {...register("image", { required: !post })}
                 />
-                <Select
-                    options={["active", "inactive"]}
-                    label="Status"
-                    className="mb-4 cursor-pointer"
-                    {...register("status", { required: true })}
-                />
-                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full text-white">
-                    {post ? "Update" : "Submit"}
-                </Button>
+                    <Select
+                        options={["active", "inactive"]}
+                        label="Status"
+                        className="mb-6 cursor-pointer"
+                        {...register("status", { required: true })}
+                    />
+                    <Button 
+                        type="submit" 
+                        bgColor={post ? "bg-green-500" : undefined} 
+                        className="w-full text-white py-3 text-base"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Submitting..." : (post ? "Update" : "Submit")}
+                    </Button>
+                </div>
             </div>
         </form>
     );

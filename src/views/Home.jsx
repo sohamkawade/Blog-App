@@ -12,28 +12,29 @@ const Home = () => {
   const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
-    console.log("Home: Loading posts, userData:", userData ? "User logged in" : "No user");
     setLoading(true);
     setError(null);
-    appwriteService
-      .getPosts()
-      .then((posts) => {
-        console.log("Home: Posts received:", posts);
-        if (posts) {
-          const sortedPosts = [...posts.documents].sort(
-            (a, b) => new Date(b.$createdAt) - new Date(a.$createdAt)
-          );
-          console.log("Home: Sorted posts:", sortedPosts.length);
-          setPosts(sortedPosts);
-        }
-      })
-      .catch((err) => {
-        console.error("Home: Error loading posts:", err);
-        setError("Failed to load posts");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    
+    // Add a small delay to ensure authentication state is properly set
+    setTimeout(() => {
+      appwriteService
+        .getPosts()
+        .then((posts) => {
+          if (posts) {
+            const sortedPosts = [...posts.documents].sort(
+              (a, b) => new Date(b.$createdAt) - new Date(a.$createdAt)
+            );
+            setPosts(sortedPosts);
+          }
+        })
+        .catch((err) => {
+          console.error("Home: Error loading posts:", err);
+          setError("Failed to load posts");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, 100);
   }, [userData]);
 
   const renderStars = (count = 60) => {

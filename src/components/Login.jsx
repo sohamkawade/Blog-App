@@ -20,8 +20,12 @@ const Login = () => {
         const userData = await authService.getCurrentUser();
         if (userData) {
           dispatch(login({ userData }));
+          setTimeout(() => {
+            navigate("/");
+          }, 100);
+        } else {
+          navigate("/");
         }
-        navigate("/");
       }
     } catch (err) {
       console.error("Login: Error during login:", err);
