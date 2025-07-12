@@ -16,7 +16,7 @@ function Sidebar({ open, onClose, authStatus }) {
   return (
     <div className={`fixed inset-0 z-50 transition-all duration-300 ${open ? "block" : "hidden"}`}>
       <div className="absolute inset-0 bg-black bg-opacity-40" onClick={onClose}></div>
-      <aside className={`absolute right-0 top-0 h-full w-64 bg-[#18181B] shadow-lg p-6 flex flex-col gap-6 animate-fade-in transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`} style={{ minHeight: '100vh' }}>
+      <aside className={`absolute right-0 top-0 h-full w-64 bg-black shadow-lg p-6 flex flex-col gap-6 animate-fade-in transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`} style={{ minHeight: '100vh' }}>
         <div className="flex items-center justify-between mb-8">
           <NavLink to="/" onClick={onClose} className="flex items-center gap-2">
             <BlogLogo width="36px" />
@@ -58,7 +58,7 @@ const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#18181B] w-full">
+    <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-md">
       <Container>
         <nav className="flex flex-wrap items-center py-3 gap-y-2 md:gap-y-0">
           <div className="mr-6 flex-shrink-0 flex items-center">
@@ -66,7 +66,6 @@ const Header = () => {
               <BlogLogo width="45px" />
             </NavLink>
           </div>
-          {/* Hamburger for mobile */}
           <button
             className="md:hidden ml-auto text-[#F3F4F6] text-2xl focus:outline-none"
             onClick={() => setSidebarOpen(true)}
@@ -74,7 +73,6 @@ const Header = () => {
           >
             <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
-          {/* Desktop nav */}
           <ul className="hidden md:flex flex-row gap-2 md:gap-4 ml-auto items-center w-full md:w-auto">
             {navItems.map((item) =>
               (item.auth === "any" || item.auth === authStatus) ? (
@@ -101,10 +99,9 @@ const Header = () => {
             )}
           </ul>
         </nav>
-        {/* Sidebar for mobile/tablet */}
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} authStatus={authStatus} />
       </Container>
-      <div className="border border-[#232336] mx-10 w-[90%]"></div>
+      <div className="text-center border-t border-[#232336] ml-10 mr-10"></div>
     </header>
   );
 };

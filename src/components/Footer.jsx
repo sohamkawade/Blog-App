@@ -3,11 +3,9 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="relative overflow-hidden py-10 bg-[#18181B] border-t border-[#232336] mt-12 w-full">
+    <footer className="relative overflow-hidden py-10 border-t border-[#232336] mt-12 w-full bg-transparent backdrop-blur-md">
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 2xl:px-0">
-        {/* Footer content */}
         <div className="flex flex-wrap justify-evenly text-center md:text-left gap-y-8 md:gap-y-0">
-          {/* Company */}
           <div className="w-full sm:w-1/2 md:w-1/4 p-6">
             <h3 className="tracking-widest mb-6 text-xs font-semibold uppercase text-[#6366F1]">Company</h3>
             <ul>
@@ -26,7 +24,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
           <div className="w-full sm:w-1/2 md:w-1/4 p-6">
             <h3 className="tracking-widest mb-6 text-xs font-semibold uppercase text-[#6366F1]">Support</h3>
             <ul>
@@ -45,7 +42,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legals */}
           <div className="w-full sm:w-1/2 md:w-1/4 p-6">
             <h3 className="tracking-widest mb-6 text-xs font-semibold uppercase text-[#6366F1]">Legals</h3>
             <ul>
@@ -62,7 +58,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Centered Rights */}
         <div className="mt-8 text-center border-t border-[#232336] pt-6">
           <p className="text-sm text-[#A1A1AA]">
             &copy; {new Date().getFullYear()} All Rights Reserved.

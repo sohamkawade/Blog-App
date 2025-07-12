@@ -1,0 +1,34 @@
+.galaxy-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at bottom, #050014 0%, #000000 100%);
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .galaxy-star {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.85;
+    animation: moveStar 20s linear infinite;
+  }
+  
+  @keyframes moveStar {
+    0% {
+      transform: translate(0px, 0px);
+    }
+    25% {
+      transform: translate(80px, -100px);
+    }
+    50% {
+      transform: translate(-60px, 80px);
+    }
+    75% {
+      transform: translate(40px, -60px);
+    }
+    100% {
+      transform: translate(0px, 0px);
+    }
+  }
+  

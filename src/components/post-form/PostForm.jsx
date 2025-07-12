@@ -72,7 +72,7 @@ export default function PostForm({ post }) {
 
     return (
         <form onSubmit={handleSubmit(submit)} className="flex flex-col md:flex-row flex-wrap w-full gap-4 md:gap-0">
-            <div className="w-full md:w-2/3 px-0 md:px-2 text-white">
+            <div className="w-full  md:w-2/3 px-0 md:px-2 text-white">
                 <Input
                     label="Title :"
                     placeholder="Title"

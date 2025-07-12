@@ -36,16 +36,16 @@ export default function Post() {
 
   if (!post) {
     return (
-      <div className="py-12 bg-[#18181B] min-h-[60vh] flex items-center justify-center">
+      <div className="py-12 min-h-[60vh] flex items-center justify-center">
         <div className="text-[#F3F4F6] text-xl animate-pulse">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="py-12 bg-[#18181B] min-h-[60vh]">
+    <div className="py-12 min-h-[60vh]">
       <Container>
-        <div className="max-w-3xl mx-auto bg-black border border-[#2C2C30] rounded-2xl shadow-xl p-6 transition-all duration-300 animate-fade-in">
+        <div className="max-w-3xl mx-auto bg-black border border-[#2C2C30] rounded-2xl shadow-xl p-6 transition-all duration-300 animate-fade-in bg-opacity-80 backdrop-blur-md">
           <div className="w-full flex justify-center mb-6 rounded-xl overflow-hidden">
             <img
               src={appwriteService.getFileView(post.featuredImage)}

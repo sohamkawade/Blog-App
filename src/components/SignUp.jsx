@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import authService from "../app/auth";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -19,10 +20,10 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-2 sm:px-4">
+    <div className="p-12 flex items-center justify-center px-2 sm:px-4">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="relative z-20 w-full max-w-xs sm:max-w-sm md:max-w-md bg-black rounded-xl p-4 sm:p-6 md:p-8 flex flex-col gap-4 sm:gap-6 animate-fade-in shadow-lg"
+        className="relative border border-gray-800 z-20 w-full max-w-xs sm:max-w-sm md:max-w-md bg-black rounded-xl p-4 sm:p-6 md:p-8 flex flex-col gap-4 sm:gap-6 animate-fade-in shadow-lg"
       >
         <h2 className="text-2xl sm:text-3xl font-bold text-[#F3F4F6] text-center mb-2">Sign Up</h2>
         <div className="flex flex-col gap-2">
@@ -64,7 +65,7 @@ const SignUp = () => {
         </button>
         <p className="text-[#A1A1AA] text-center mt-2 text-xs sm:text-sm">
           Already have an account?{' '}
-          <a href="/login" className="text-[#6366F1] hover:underline">Login</a>
+          <Link to="/login" className="text-[#6366F1] hover:underline">Login</Link>
         </p>
       </form>
     </div>
