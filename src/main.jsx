@@ -8,7 +8,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Home from "./views/Home.jsx";
 import { AuthLayout, Login, PostForm } from "./components/index.js";
 import AddPost from "./views/AddPost.jsx";
-import Signup from "./views/Signup";
+import SignUp from "./views/SignUp.jsx";
 import EditPost from "./views/EditPost";
 import AllPosts from "./views/AllPosts";
 import Post from "./views/Post.jsx";
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         path: "/signup",
         element: (
           <AuthLayout authentication={false}>
-            <Signup />
+            <SignUp />
           </AuthLayout>
         ),
       },
