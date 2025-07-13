@@ -14,8 +14,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    
-    // Add a small delay to ensure authentication state is properly set
+
     setTimeout(() => {
       appwriteService
         .getPosts()
@@ -90,11 +89,11 @@ const Home = () => {
             </div>
           )}
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-6 mt-2">
-            Welcome to Our Galaxy Blog ✨
+            Welcome to Our Blog... 
           </h1>
           <p className="text-indigo-200 text-lg mb-8">
-            Explore AI-driven content, futuristic design, and real-time
-            collaboration in one platform.
+            Discover stories, share thoughts, and connect with others. Start
+            your blogging journey today.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
@@ -164,8 +163,12 @@ const Home = () => {
         <div className="w-full flex flex-col items-center justify-center text-center px-6 animate-fade-in py-16 z-10 relative">
           <div className="max-w-xl mx-auto space-y-6">
             <div className="text-7xl animate-bounce">🚀</div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mt-4 mb-2">No posts yet</h2>
-            <p className="text-indigo-200 text-lg mb-6">Be the first to add content to the blog!</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mt-4 mb-2">
+              No posts yet
+            </h2>
+            <p className="text-indigo-200 text-lg mb-6">
+              Be the first to add content to the blog!
+            </p>
             <Link
               to="/add-post"
               className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-indigo-700 transition"

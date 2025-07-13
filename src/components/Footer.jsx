@@ -59,9 +59,9 @@ const Footer = () => {
         </div>
 
         <div className="mt-8 text-center border-t border-[#232336] pt-6">
-          <p className="text-sm text-[#A1A1AA]">
-            &copy; {new Date().getFullYear()} All Rights Reserved.
-          </p>
+          <p className="text-center text-sm text-gray-400">
+    © {new Date().getFullYear()} Developed by <span className="font-semibold text-white">Soham</span>
+  </p>
         </div>
       </div>
     </footer>
