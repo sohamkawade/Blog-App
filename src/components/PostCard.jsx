@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import appwriteService from "../app/conf";
 import { Link } from "react-router-dom";
-import { UserCircle } from "lucide-react";
+import { FaUserCircle } from "react-icons/fa";
 
 const PostCard = ({
   $id,
@@ -12,12 +12,29 @@ const PostCard = ({
   $createdAt,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(() => {
+    const stored = localStorage.getItem(`like_${$id}`);
+    return stored ? JSON.parse(stored) : false;
+  });
+  const [likeCount, setLikeCount] = useState(() => {
+    const stored = localStorage.getItem(`likeCount_${$id}`);
+    return stored ? JSON.parse(stored) : 0;
+  });
 
   const handleLikeClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsLiked(!isLiked);
+    let newLiked = !isLiked;
+    let newCount = likeCount;
+    if (newLiked) {
+      newCount = likeCount + 1;
+    } else {
+      newCount = likeCount - 1;
+    }
+    setIsLiked(newLiked);
+    setLikeCount(newCount);
+    localStorage.setItem(`like_${$id}`, JSON.stringify(newLiked));
+    localStorage.setItem(`likeCount_${$id}`, JSON.stringify(newCount));
   };
 
   const truncateContent = (text, maxLength = 100) => {
@@ -36,8 +53,8 @@ const PostCard = ({
   return (
     <div className="bg-[#232336]/70 border border-indigo-800 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 p-3 flex flex-col items-start h-full z-10">
       <div className="flex items-center mb-2 w-full">
-        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-700 text-gray-300 text-base mr-2">
-          <UserCircle className="w-4 h-4" />
+        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-800 text-gray-100 text-base mr-2">
+          <FaUserCircle className="w-4 h-4" />
         </span>
         <span className="font-semibold text-gray-100 text-sm">
           {username || "User"}
@@ -61,27 +78,30 @@ const PostCard = ({
 
       <div className="w-full flex justify-between items-start mb-1">
         <h2 className="text-lg font-bold text-blue-500 flex-1">{title}</h2>
-        <button
-          onClick={handleLikeClick}
-          className="ml-2 p-1 hover:scale-110 transition-transform duration-200 focus:outline-none"
-          title={isLiked ? "Unlike" : "Like"}
-        >
-          <svg
-            className={`w-5 h-5 cursor-pointer transition-colors duration-200 ${
-              isLiked ? "text-red-600 fill-current" : "text-gray-400"
-            }`}
-            fill={isLiked ? "currentColor" : "none"}
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleLikeClick}
+            className="ml-2 p-1 hover:scale-110 transition-transform duration-200 focus:outline-none"
+            title={isLiked ? "Unlike" : "Like"}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        </button>
+            <svg
+              className={`w-5 h-5 cursor-pointer transition-colors duration-200 ${
+                isLiked ? "text-red-600 fill-current" : "text-gray-400"
+              }`}
+              fill={isLiked ? "currentColor" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          </button>
+          <span className="text-xs text-gray-400 select-none">{likeCount}</span>
+        </div>
       </div>
 
       {content && (

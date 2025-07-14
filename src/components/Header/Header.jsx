@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Container, LogoutButton } from "../index";
-import { NavLink } from "react-router-dom";
+import { Container } from "../index";
+import { NavLink, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import BlogLogo from "../Logo";
+import { FaUserCircle } from "react-icons/fa";
 
 const navItems = [
   { name: "Home", url: "/", auth: "any" },
-  { name: "All Posts", url: "/all-posts", auth: true },
   { name: "Add Post", url: "/add-post", auth: true },
   { name: "Login", url: "/login", auth: false },
   { name: "Signup", url: "/signup", auth: false },
@@ -19,12 +18,12 @@ function Sidebar({ open, onClose, authStatus }) {
       <aside className={`absolute right-0 top-0 h-full w-64 bg-black shadow-lg p-6 flex flex-col gap-6 animate-fade-in transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`} style={{ minHeight: '100vh' }}>
         <div className="flex items-center justify-between mb-8">
           <NavLink to="/" onClick={onClose} className="flex items-center gap-2">
-            <BlogLogo width="36px" />
+            <img src="blog-icon.svg" alt="blog-logo" />
             <span className="text-lg font-bold text-[#F3F4F6]">BlogSphere</span>
           </NavLink>
           <button onClick={onClose} className="text-[#F3F4F6] text-2xl">&times;</button>
         </div>
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-4 flex-grow">
           {navItems.map((item) =>
             (item.auth === "any" || item.auth === authStatus) ? (
               <li key={item.name}>
@@ -42,12 +41,15 @@ function Sidebar({ open, onClose, authStatus }) {
               </li>
             ) : null
           )}
-          {authStatus && (
-            <li>
-              <LogoutButton />
-            </li>
-          )}
         </ul>
+        {authStatus && (
+          <div className="mt-auto pt-8 flex justify-center">
+            <Link to="/profile" onClick={onClose} className="flex flex-col items-center text-[#F3F4F6] hover:text-[#6366F1]">
+              <FaUserCircle className="text-4xl mb-1" />
+              <span className="text-sm">Profile</span>
+            </Link>
+          </div>
+        )}
       </aside>
     </div>
   );
@@ -63,7 +65,7 @@ const Header = () => {
         <nav className="flex flex-wrap items-center py-3 gap-y-2 md:gap-y-0">
           <div className="mr-6 flex-shrink-0 flex items-center">
             <NavLink to="/">
-              <BlogLogo width="45px" />
+            <img src="blog-icon.svg" alt="blog-logo" />
             </NavLink>
           </div>
           <button
@@ -74,9 +76,9 @@ const Header = () => {
             <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
           <ul className="hidden md:flex flex-row gap-2 md:gap-4 ml-auto items-center w-full md:w-auto">
-            {navItems.map((item) =>
+            {navItems.map((item, idx) =>
               (item.auth === "any" || item.auth === authStatus) ? (
-                <li key={item.name} className="w-full md:w-auto">
+                <li key={item.name} className={`w-full md:w-auto${item.name === 'Add Post' ? ' mx-0 md:mr-6' : ''}`}>
                   <NavLink
                     to={item.url}
                     className={({ isActive }) =>
@@ -92,9 +94,12 @@ const Header = () => {
                 </li>
               ) : null
             )}
+            <li className="flex-grow hidden md:block"></li>
             {authStatus && (
-              <li className="w-full md:w-auto">
-                <LogoutButton />
+              <li className="w-full md:w-auto flex items-center justify-end ml-2">
+                <Link to="/profile" className="flex items-center justify-center text-[#F3F4F6] hover:text-[#6366F1] text-2xl md:text-3xl">
+                  <FaUserCircle />
+                </Link>
               </li>
             )}
           </ul>

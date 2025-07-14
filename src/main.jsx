@@ -10,7 +10,7 @@ import { AuthLayout, Login, PostForm } from "./components/index.js";
 import AddPost from "./views/AddPost.jsx";
 import SignUp from "./views/SignUp.jsx";
 import EditPost from "./views/EditPost";
-import AllPosts from "./views/AllPosts";
+import Profile from "./views/Profile";
 import Post from "./views/Post.jsx";
 
 const router = createBrowserRouter([
@@ -39,11 +39,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/all-posts",
+        path: "/profile",
         element: (
           <AuthLayout authentication={true}>
-            {" "}
-            <AllPosts />
+            <Profile />
           </AuthLayout>
         ),
       },
