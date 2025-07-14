@@ -17,7 +17,6 @@ export class AuthService {
     async createAccount({ email, password, name }) {
         try {
             const userId = ID.unique();
-            console.log("userId being used:", userId);
             return await this.account.create(userId, email, password, name);
         } catch (error) {
             throw error;

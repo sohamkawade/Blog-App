@@ -28,32 +28,32 @@ export default function PostForm({ post }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = async (data) => {
+    console.log('userData:', userData);
+    if (!userData.name) {
+      alert('Your profile is missing a username. Please sign up again or contact support.');
+      return;
+    }
     if (!data.slug || data.slug.length > 36 || !/^[a-zA-Z0-9_-]+$/.test(data.slug)) {
       alert("❗ Invalid slug: Use only letters, numbers, hyphens, and underscores (max 36 chars).");
       return;
     }
-
     if (!data.content || data.content.length > 255) {
       alert("❗ Content is required and should be 255 characters or less.");
       return;
     }
-
     setIsSubmitting(true);
     try {
       if (post) {
         const file = data.image[0]
           ? await appwriteService.uploadFile(data.image[0])
           : null;
-
         if (file) {
           appwriteService.deleteFile(post.featuredImage);
         }
-
         const dbPost = await appwriteService.updatePost(post.$id, {
           ...data,
           featuredImage: file ? file.$id : undefined,
         });
-
         if (dbPost) {
           navigate(`/post/${dbPost.$id}`);
         }
@@ -62,18 +62,15 @@ export default function PostForm({ post }) {
           alert("Please select an image file. This is required for new posts.");
           return;
         }
-
         const file = await appwriteService.uploadFile(data.image[0]);
-
         if (file) {
           const fileId = file.$id;
           data.featuredImage = fileId;
-
           const dbPost = await appwriteService.createPost({
             ...data,
             userId: userData.$id,
+            username: userData.name,
           });
-
           if (dbPost) {
             navigate(`/`);
           }
@@ -175,7 +172,7 @@ export default function PostForm({ post }) {
           id="content"
           placeholder="Write your post here..."
           rows={13}
-          className="w-full bg-[#1e1e2f]/80 text-white border border-gray-600 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full bg-[#18181B] text-white border border-gray-600 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           {...register("content", {
             required: "Content is required",
             maxLength: {
@@ -190,7 +187,7 @@ export default function PostForm({ post }) {
       </div>
 
       <div className="w-full lg:w-1/3 px-2 sm:px-4 lg:px-6 text-white">
-        <div className="top-6 bg-[#1e1e2f]/80 backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-[#2C2C30] flex flex-col gap-4">
+        <div className="top-6 bg-[#18181B] backdrop-blur-sm p-4 sm:p-6 rounded-xl border border-[#2C2C30] flex flex-col gap-4">
           <Input
             label="Featured Image :"
             type="file"
