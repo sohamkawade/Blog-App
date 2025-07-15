@@ -10,7 +10,7 @@ import { AuthLayout, Login, PostForm } from "./components/index.js";
 import AddPost from "./views/AddPost.jsx";
 import SignUp from "./views/SignUp.jsx";
 import EditPost from "./views/EditPost";
-import Profile from "./views/Profile";
+import Profile from "./views/Profile.jsx";
 import Post from "./views/Post.jsx";
 
 const router = createBrowserRouter([
