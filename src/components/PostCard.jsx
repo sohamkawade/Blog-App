@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import appwriteService from "../app/conf";
 import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const PostCard = ({
   $id,
@@ -12,29 +13,40 @@ const PostCard = ({
   $createdAt,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const [isLiked, setIsLiked] = useState(() => {
-    const stored = localStorage.getItem(`like_${$id}`);
-    return stored ? JSON.parse(stored) : false;
-  });
-  const [likeCount, setLikeCount] = useState(() => {
-    const stored = localStorage.getItem(`likeCount_${$id}`);
-    return stored ? JSON.parse(stored) : 0;
-  });
+  const userData = useSelector(state => state.auth.userData);
+  const userId = userData?.$id;
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLiking, setIsLiking] = useState(false);
+  const [isLiked, setIsLiked] = useState(false); 
 
-  const handleLikeClick = (e) => {
+  useEffect(() => {
+    appwriteService.getPost($id).then(post => {
+      setLikeCount(post.likes || 0);
+      setIsLiked(post.likedby?.includes(userId));
+    });
+  }, [$id, userId]);
+
+  const handleLikeClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    let newLiked = !isLiked;
-    let newCount = likeCount;
-    if (newLiked) {
-      newCount = likeCount + 1;
-    } else {
-      newCount = likeCount - 1;
+    if (!userId) {
+      alert("You must be logged in to like posts.");
+      return;
     }
-    setIsLiked(newLiked);
-    setLikeCount(newCount);
-    localStorage.setItem(`like_${$id}`, JSON.stringify(newLiked));
-    localStorage.setItem(`likeCount_${$id}`, JSON.stringify(newCount));
+    setIsLiking(true);
+    try {
+      let updated;
+      if (!isLiked) {
+        updated = await appwriteService.likePost($id, userId);
+      } else {
+        updated = await appwriteService.unlikePost($id, userId);
+      }
+      setLikeCount(updated.likes);
+      setIsLiked(updated.likedby.includes(userId));
+    } catch (err) {
+      alert("Failed to update like.");
+    }
+    setIsLiking(false);
   };
 
   const truncateContent = (text, maxLength = 100) => {
@@ -83,11 +95,10 @@ const PostCard = ({
             onClick={handleLikeClick}
             className="ml-2 p-1 hover:scale-110 transition-transform duration-200 focus:outline-none"
             title={isLiked ? "Unlike" : "Like"}
+            disabled={isLiking}
           >
             <svg
-              className={`w-5 h-5 cursor-pointer transition-colors duration-200 ${
-                isLiked ? "text-red-600 fill-current" : "text-gray-400"
-              }`}
+              className={`w-5 h-5 cursor-pointer transition-colors duration-200 ${isLiked ? "text-red-600 fill-current" : "text-gray-400"}`}
               fill={isLiked ? "currentColor" : "none"}
               stroke="currentColor"
               strokeWidth="2"

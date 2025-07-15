@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import appwriteService from "../app/conf";
 import { Query } from "appwrite";
-import { Container } from "../components";
+import { Container, PostCard } from "../components";
 import { LogoutButton } from "../components";
 import { FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -76,84 +76,83 @@ const Profile = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {posts.map((post) => {
-              const likeCount =
-                Number(localStorage.getItem(`likeCount_${post.$id}`)) || 0;
-              return (
-                <div
-                  key={post.$id}
-                  className="bg-[#232336]/80 border border-indigo-800 rounded-xl overflow-hidden shadow-md flex flex-col group relative"
-                >
-                  {post.featuredImage ? (
-                    <img
-                      src={appwriteService.getFileView(post.featuredImage)}
-                      alt={post.title}
-                      className="w-full h-40 object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-40 flex items-center justify-center bg-gray-800 text-gray-400">
-                      No Image
-                    </div>
-                  )}
-                  <div className="p-3 flex-1 flex flex-col">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-base font-semibold text-white truncate flex-1">
-                        {post.title}
-                      </h3>
-                      <span className="flex items-center gap-1 ml-2 text-xs text-pink-400">
-                        <svg
-                          className="w-4 h-4 text-red-500"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                        {likeCount}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-300 flex-1 truncate">
-                      {post.content?.replace(/<[^>]*>/g, "").slice(0, 60)}
-                      {post.content && post.content.length > 60 ? "..." : ""}
-                    </p>
-                    <div className="flex justify-between items-center mt-2">
-                      <Link
-                        to={`/post/${post.$id}`}
-                        className="text-indigo-400 hover:text-indigo-300 text-xs font-medium"
+            {posts.map((post) => (
+              <div key={post.$id} className="bg-[#232336]/80 border border-indigo-800 rounded-xl overflow-hidden shadow-md flex flex-col group relative">
+                {post.featuredImage ? (
+                  <img
+                    src={appwriteService.getFileView(post.featuredImage)}
+                    alt={post.title}
+                    className="w-full h-40 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-40 flex items-center justify-center bg-gray-800 text-gray-400">
+                    No Image
+                  </div>
+                )}
+                <div className="p-3 flex-1 flex flex-col">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="text-base font-semibold text-white truncate flex-1">
+                      {post.title}
+                    </h3>
+                    <span className="flex items-center gap-1 ml-2 text-xs text-pink-400">
+                      <svg
+                        className={`w-4 h-4 ${Array.isArray(post.likedby) && post.likedby.includes(userData?.$id) ? "text-red-500" : "text-gray-400"}`}
+                        fill={Array.isArray(post.likedby) && post.likedby.includes(userData?.$id) ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        Read More
-                      </Link>
-                      {userData?.$id === post.userId && (
-                        <div className="flex gap-2">
-                          <button
-                            title="Edit"
-                            className="p-1 cursor-pointer rounded hover:bg-indigo-700 text-indigo-400 hover:text-white transition"
-                            onClick={() => navigate(`/edit-post/${post.$id}`)}
-                          >
-                            <FiEdit2 size={16} />
-                          </button>
-                          <button
-                            title="Delete"
-                            className="p-1 cursor-pointer rounded hover:bg-red-700 text-red-400 hover:text-white transition"
-                            onClick={async () => {
-                              await appwriteService.deletePost(post.$id);
-                              if (post.featuredImage)
-                                await appwriteService.deleteFile(
-                                  post.featuredImage
-                                );
-                              setPosts((prev) =>
-                                prev.filter((p) => p.$id !== post.$id)
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                      <p className="text-gray-300">{post.likes || 0}</p>
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-300 flex-1 truncate">
+                    {post.content?.replace(/<[^>]*>/g, "").slice(0, 60)}
+                    {post.content && post.content.length > 60 ? "..." : ""}
+                  </p>
+                  <div className="flex justify-between items-center mt-2">
+                    <Link
+                      to={`/post/${post.$id}`}
+                      className="text-indigo-400 hover:text-indigo-300 text-xs font-medium"
+                    >
+                      Read More
+                    </Link>
+                    {userData?.$id === post.userId && (
+                      <div className="flex gap-2">
+                        <button
+                          title="Edit"
+                          className="p-1 cursor-pointer rounded hover:bg-indigo-700 text-indigo-400 hover:text-white transition"
+                          onClick={() => navigate(`/edit-post/${post.$id}`)}
+                        >
+                          <FiEdit2 size={16} />
+                        </button>
+                        <button
+                          title="Delete"
+                          className="p-1 cursor-pointer rounded hover:bg-red-700 text-red-400 hover:text-white transition"
+                          onClick={async () => {
+                            await appwriteService.deletePost(post.$id);
+                            if (post.featuredImage)
+                              await appwriteService.deleteFile(
+                                post.featuredImage
                               );
-                            }}
-                          >
-                            <FiTrash2 size={16} />
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                            setPosts((prev) =>
+                              prev.filter((p) => p.$id !== post.$id)
+                            );
+                          }}
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </Container>

@@ -27,6 +27,7 @@ export class Service{
                     status,
                     userId,
                     username,
+                    likes: 0 
                 }
             )
         } catch (error) {
@@ -34,19 +35,13 @@ export class Service{
         }
     }
 
-    async updatePost(slug, {title, content, featuredImage, status}){
+    async updatePost(slug, data){
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
                 slug,
-                {
-                    title,
-                    content,
-                    featuredImage,
-                    status,
-
-                }
+                data
             )
         } catch (error) {
             console.log("Appwrite serive :: updatePost :: error", error);
@@ -97,7 +92,6 @@ export class Service{
         }
     }
 
-    // file upload service
 
     async uploadFile(file){
         try {
@@ -130,6 +124,30 @@ export class Service{
             conf.appwriteBucketId,
             fileId
         )
+    }
+
+    async likePost(slug, userId) {
+        const post = await this.getPost(slug);
+        if (!post) return false;
+        const likedby = post.likedby || [];
+        if (!likedby.includes(userId)) {
+            likedby.push(userId);
+            return await this.updatePost(slug, {
+                likes: (post.likes || 0) + 1,
+                likedby,
+            });
+        }
+        return post;
+    }
+
+    async unlikePost(slug, userId) {
+        const post = await this.getPost(slug);
+        if (!post) return false;
+        const likedby = (post.likedby || []).filter(id => id !== userId);
+        return await this.updatePost(slug, {
+            likes: Math.max((post.likes || 1) - 1, 0),
+            likedby,
+        });
     }
 }
 

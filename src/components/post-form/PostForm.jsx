@@ -37,8 +37,8 @@ export default function PostForm({ post }) {
       alert("❗ Invalid slug: Use only letters, numbers, hyphens, and underscores (max 36 chars).");
       return;
     }
-    if (!data.content || data.content.length > 255) {
-      alert("❗ Content is required and should be 255 characters or less.");
+    if (!data.content || data.content.length > 10000) {
+      alert("❗ Content is required and should be 10000 characters or less.");
       return;
     }
     setIsSubmitting(true);
@@ -176,8 +176,8 @@ export default function PostForm({ post }) {
           {...register("content", {
             required: "Content is required",
             maxLength: {
-              value: 255,
-              message: "Content cannot exceed 255 characters",
+              value: 10000,
+              message: "Content cannot exceed 10000 characters",
             },
           })}
         />
