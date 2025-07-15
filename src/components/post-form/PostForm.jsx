@@ -28,7 +28,6 @@ export default function PostForm({ post }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = async (data) => {
-    console.log('userData:', userData);
     if (!userData.name) {
       alert('Your profile is missing a username. Please sign up again or contact support.');
       return;
